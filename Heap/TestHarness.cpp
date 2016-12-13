@@ -11,7 +11,7 @@ using namespace std;
 
 int main()
 {
-	srand(time(NULL));
+	srand( static_cast<unsigned int>( time(NULL) ) );
 
 	//TEST BASIC MAX_HEAP FUNCTIONS
 	//Create a MAX_HEAP
@@ -87,6 +87,16 @@ int main()
 	myMaxHeap = myMaxHeap + myMaxHeap2;
 	cout << "After adding to myMaxHeap2, myMaxHeap has a new size of: " << myMaxHeap.size() << endl;
 
+	//Heapsort
+	vector<int> myVector = myMaxHeap.getSortedVector();
+	cout << "Sorted vector returns: ";
+	for (unsigned int i = 0; i < myVector.size(); i++)
+	{
+		cout << myVector[i] << " ";
+	}
+	cout << endl;
+
+
 	//Delete all nodes
 	cout << "Deleting: ";
 	while (myMaxHeap.size() > 0)
@@ -97,7 +107,6 @@ int main()
 	cout << endl;
 
 
-	//Set the first heap equal to the second heap
 
 
 
