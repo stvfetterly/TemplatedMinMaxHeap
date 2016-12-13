@@ -14,7 +14,9 @@ public:
 	void Insert(const T& newItem)
 	{
 		m_heap.push_back(newItem);
-		bubbleUp( (m_heap.size()-1) );
+		unsigned int heapSize = m_heap.size() - 1;
+
+		bubbleUp( heapSize );
 	}
 
 	//Returns null if there are no values in the heap, otherwise gets the MAX or MIN value
@@ -41,12 +43,12 @@ public:
 		}
 
 		//Swap the last node into the first node, and bubble down
-		m_heap[0] = m_heap[length-1];
+		m_heap[0] = m_heap[length - 1];
 		m_heap.pop_back();
 		bubbleDown(0);
 	}
 
-	int size() const
+	unsigned int size() const
 	{
 		return m_heap.size();
 	}
@@ -54,7 +56,7 @@ public:
 	//Accessor methods
 	HeapType GetHeapType() const { return m_type; }
 	void SetHeapType(HeapType type)
-	{ 
+	{
 		if (m_type != type)
 		{
 			m_type = type;
@@ -67,12 +69,12 @@ public:
 	{
 		SetHeapType(type);
 	}
-	Heap(const T* dataArray, const int& length, HeapType type)
+	Heap(const T* dataArray, const unsigned int& length, HeapType type)
 	{
 		m_type = type;
 
 		//copy new data into heap
-		for (int i = 0; i < length; i++)
+		for (unsigned int i = 0; i < length; i++)
 		{
 			Insert(dataArray[i]);
 		}
@@ -109,7 +111,7 @@ public:
 
 		return *this;
 	}
-	
+
 	//Addition operator - keeps lhs heap type the same, adds in new data from rhs
 	Heap& operator+(const Heap& rhs)
 	{
@@ -127,6 +129,26 @@ public:
 		return m_heap;
 	}
 
+	const std::vector<T> getSortedVector() const
+	{
+		std::vector<T> returnVector;
+
+		//Create a new heap that will be destroyed while sorting
+		Heap<T> newHeap = *this;
+		
+		//fill the return vector by deleting the head of the heap until there's nothing left
+		while (newHeap.size() > 0)
+		{
+			//build the vector from the heap objects
+			returnVector.push_back(*(newHeap.getFirst()));
+
+			//delete the min/max
+			newHeap.deleteFirst();
+		}
+
+		return returnVector;
+	}
+
 private:
 	std::vector<T> m_heap;
 	HeapType m_type;
@@ -140,7 +162,7 @@ private:
 		}
 	}
 	//Used when adding a single item to the heap
-	void bubbleUp(int child)
+	void bubbleUp(unsigned int& child)
 	{
 		//No further recursion necessary, we're looking at the head node
 		if (child == 0)
@@ -148,7 +170,7 @@ private:
 			return;
 		}
 
-		int parent = (child - 1) / 2;
+		unsigned int parent = (child - 1) / 2;
 
 		//Check if the parent should be swapped with the child, if yes, recurse to check next level up
 		if (swapWithParent(parent, child))
@@ -158,11 +180,11 @@ private:
 	}
 
 	//Used to sort when multiple items are added to the heap, or when we delete the head
-	void bubbleDown(int parent)
+	void bubbleDown(unsigned int parent)
 	{
-		int length = m_heap.size();
-		int leftChild = 2 * parent + 1;
-		int rightChild = 2 * parent + 2;
+		unsigned int length = m_heap.size();
+		unsigned int leftChild = 2 * parent + 1;
+		unsigned int rightChild = 2 * parent + 2;
 
 		if (leftChild >= length)
 		{
@@ -170,7 +192,7 @@ private:
 		}
 
 		//figure out which child should be swapped
-		int childToSwap = getChildToSwap(leftChild, rightChild);
+		unsigned int childToSwap = getChildToSwap(leftChild, rightChild);
 
 		//If a swap was made, then we need to keep recursing
 		if ( swapWithParent(parent, childToSwap))
@@ -181,7 +203,7 @@ private:
 
 	//Checks if the parent should be swapped with the child depending on type of heap
 	//Returns FALSE when a swap was not made (heap is sorted)
-	bool swapWithParent(int& parent, int& child)
+	bool swapWithParent(unsigned int& parent, unsigned int& child)
 	{
 		//For MAX HEAP we want the parent to always be bigger than the child,
 		//for MIN HEAP parent should be smaller than child.
@@ -198,7 +220,7 @@ private:
 	}
 
 	//Determines if a bubble down should go with the right or left child
-	int getChildToSwap(const int& leftChild, const int& rightChild) const
+	int getChildToSwap(const unsigned int& leftChild, const unsigned int& rightChild) const
 	{
 		//If there is no right child, search the left child
 		if ( rightChild >= m_heap.size() )
